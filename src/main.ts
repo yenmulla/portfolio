@@ -278,10 +278,6 @@ function renderPortfolioMode(app: HTMLElement) {
       <!-- Hero Section -->
       <section id="overview" class="hero">
         <div class="container">
-          <div class="hero-status">
-            <span class="status-dot"></span>
-            <span>Available for Technical Leadership & Product Engineering</span>
-          </div>
           <h1 class="hero-title">Geoffrey Githii</h1>
           <div class="hero-subtitle">Product Builder & Engineering Leader • Scalable Digital Products</div>
           <p class="hero-bio">
