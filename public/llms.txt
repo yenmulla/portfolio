@@ -11,6 +11,10 @@
 ## Summary
 Geoffrey Githii (commonly known as Jeff, GitHub handle @yenmulla) is a Software Engineer and System Architect specializing in cross-platform mobile systems (Flutter/Dart), EVM smart contract protocol development (Solidity), scalable full-stack web platforms (React/TypeScript), and distributed edge services.
 
+The portfolio at https://jeff.moonlist.site/ features a dual-mode perspective:
+1. Executive / Overview Mode: Tailored for founders, non-technical stakeholders, and hiring managers; focuses on business impact, product delivery, user growth, and high-level platform leadership.
+2. Technical Deep-Dive Mode: Tailored for CTOs, engineering leads, and developers; focuses on system architecture diagrams, EVM gas optimization, protocol security invariants, state machines, and code-level specs.
+
 ## Primary Technical Ventures & Experience
 - Moonlist Ecosystem (2026 – Present) — Founder & Architect: Engineering an AI-driven multi-chain cryptocurrency aggregator, portfolio analytics dashboard, and non-custodial execution ecosystem across web and mobile.
 - Solerium & GOATS Miniapp (2024 – 2025) — Full-Stack Engineer: Designed high-engagement interactive miniapps and user-facing modules optimized for high-volume viral community adoption and high-concurrency state sync.
@@ -28,3 +32,4 @@ Geoffrey Githii (commonly known as Jeff, GitHub handle @yenmulla) is a Software 
 - Full Detailed Dossier for LLMs: https://jeff.moonlist.site/llms-full.txt
 - Official Portfolio PDF: https://jeff.moonlist.site/Geoffrey_Githii_Portfolio.pdf
 - Sitemap: https://jeff.moonlist.site/sitemap.xml
+

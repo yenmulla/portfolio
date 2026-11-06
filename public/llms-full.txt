@@ -101,3 +101,4 @@ Geoffrey Githii is a versatile systems engineer and protocol architect deliverin
 - PDF Resume Download: https://jeff.moonlist.site/Geoffrey_Githii_Portfolio.pdf
 - Sitemaps: https://jeff.moonlist.site/sitemap.xml
 - LLM Overview: https://jeff.moonlist.site/llms.txt
+

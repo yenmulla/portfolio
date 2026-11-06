@@ -185,6 +185,133 @@ body {
   gap: 0.6rem;
 }
 
+/* Audience Mode Toggle: Overview (Non-Technical) vs Technical */
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  padding: 3px;
+  border-radius: 9999px;
+  gap: 2px;
+}
+
+.mode-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.3rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.775rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.mode-btn:hover {
+  color: var(--text);
+}
+
+.mode-btn.active {
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2), var(--card-inset);
+  font-weight: 600;
+}
+
+[data-theme="dark"] .mode-btn.active {
+  color: #38bdf8;
+  background: #1e293b;
+}
+
+[data-theme="light"] .mode-btn.active {
+  color: #0284c7;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+/* Perspective Context Banner */
+.perspective-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.65rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.perspective-banner-text {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.perspective-banner-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: var(--accent-subtle);
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.perspective-switch-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--accent);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius);
+  font-size: 0.775rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.perspective-switch-btn:hover {
+  background: var(--accent-subtle);
+  border-color: var(--accent-border);
+}
+
+.venture-arch-note {
+  font-family: var(--font-mono);
+  font-size: 0.785rem;
+  background: var(--bg-subtle);
+  border-left: 2px solid var(--accent);
+  padding: 0.45rem 0.75rem;
+  margin: 0.85rem 0;
+  color: var(--text);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  line-height: 1.5;
+}
+
+.venture-metrics-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--success);
+  background: var(--success-bg);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius);
+  margin-bottom: 0.75rem;
+  font-weight: 500;
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
