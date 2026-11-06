@@ -393,16 +393,26 @@ function attachEventHandlers() {
   // Theme Toggle
   const themeBtn = document.getElementById('theme-btn');
   if (themeBtn) {
+    const updateThemeUI = (theme: string) => {
+      document.documentElement.setAttribute('data-theme', theme);
+      themeBtn.innerHTML = theme === 'dark' ? icons.sun : icons.moon;
+      const label = theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+      themeBtn.setAttribute('title', label);
+      themeBtn.setAttribute('aria-label', label);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) {
+        meta.setAttribute('content', theme === 'dark' ? '#0a0e17' : '#ffffff');
+      }
+    };
+
     const currentTheme = localStorage.getItem('gm_theme') || 'dark';
-    document.documentElement.setAttribute('data-theme', currentTheme);
-    themeBtn.innerHTML = currentTheme === 'dark' ? icons.sun : icons.moon;
+    updateThemeUI(currentTheme);
 
     themeBtn.addEventListener('click', () => {
       const active = document.documentElement.getAttribute('data-theme');
       const next = active === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem('gm_theme', next);
-      themeBtn.innerHTML = next === 'dark' ? icons.sun : icons.moon;
+      updateThemeUI(next);
       showToast(`Switched to ${next} theme`);
     });
   }

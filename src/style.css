@@ -26,29 +26,69 @@
 
   --radius: 8px;
   --radius-lg: 12px;
+
+  /* Card and Component Variables (Dark) */
+  --card-bg: linear-gradient(180deg, rgba(20, 24, 33, 0.85) 0%, rgba(14, 18, 25, 0.95) 100%);
+  --card-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+  --card-shadow-hover: 0 12px 32px -4px rgba(0, 0, 0, 0.5);
+  --card-inset: inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  --card-inset-hover: inset 0 1px 0 0 rgba(56, 189, 248, 0.2);
+  --card-border-hover: rgba(56, 189, 248, 0.35);
+
+  --competency-bg: linear-gradient(180deg, rgba(20, 24, 33, 0.75) 0%, rgba(14, 18, 25, 0.85) 100%);
+  --competency-border-hover: rgba(99, 102, 241, 0.35);
+  --competency-inset-hover: inset 0 1px 0 0 rgba(99, 102, 241, 0.2);
+
+  --contact-card-bg: linear-gradient(180deg, rgba(20, 24, 33, 0.9) 0%, rgba(11, 14, 20, 0.98) 100%);
+  --contact-card-border: rgba(56, 189, 248, 0.25);
+  --contact-card-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(56, 189, 248, 0.3);
+  --contact-glow: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(56, 189, 248, 0) 70%);
+
+  --modal-bg: #141821;
+  --modal-overlay-bg: rgba(0, 0, 0, 0.75);
 }
 
 [data-theme="light"] {
   --bg: #ffffff;
   --bg-subtle: #f8fafc;
   --card: #ffffff;
-  --card-hover: #f8fafc;
+  --card-hover: #f1f5f9;
   --border: #e2e8f0;
   --border-focus: #0284c7;
 
   --text: #0f172a;
   --text-muted: #475569;
-  --text-subtle: #94a3b8;
+  --text-subtle: #64748b;
 
   --accent: #0284c7;
   --accent-subtle: rgba(2, 132, 199, 0.08);
   --accent-border: rgba(2, 132, 199, 0.25);
 
-  --badge-bg: #f1f5f9;
+  --badge-bg: #e0f2fe;
   --badge-text: #0369a1;
 
   --success: #059669;
   --success-bg: rgba(5, 150, 105, 0.1);
+
+  /* Card and Component Variables (Light) */
+  --card-bg: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --card-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  --card-shadow-hover: 0 10px 25px -4px rgba(15, 23, 42, 0.1);
+  --card-inset: inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+  --card-inset-hover: inset 0 1px 0 0 rgba(2, 132, 199, 0.15);
+  --card-border-hover: #0284c7;
+
+  --competency-bg: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --competency-border-hover: #6366f1;
+  --competency-inset-hover: inset 0 1px 0 0 rgba(99, 102, 241, 0.15);
+
+  --contact-card-bg: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --contact-card-border: #cbd5e1;
+  --contact-card-shadow: 0 12px 32px -8px rgba(15, 23, 42, 0.08), inset 0 1px 0 0 #ffffff;
+  --contact-glow: radial-gradient(circle, rgba(2, 132, 199, 0.08) 0%, rgba(2, 132, 199, 0) 70%);
+
+  --modal-bg: #ffffff;
+  --modal-overlay-bg: rgba(15, 23, 42, 0.5);
 }
 
 * {
@@ -357,17 +397,17 @@ body {
 }
 
 .venture-card {
-  background: linear-gradient(180deg, rgba(20, 24, 33, 0.85) 0%, rgba(14, 18, 25, 0.95) 100%);
+  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.75rem;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+  box-shadow: var(--card-shadow), var(--card-inset);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .venture-card:hover {
-  border-color: rgba(56, 189, 248, 0.35);
-  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(56, 189, 248, 0.2);
+  border-color: var(--card-border-hover);
+  box-shadow: var(--card-shadow-hover), var(--card-inset-hover);
   transform: translateY(-2px);
 }
 
@@ -470,17 +510,17 @@ body {
 }
 
 .competency-box {
-  background: linear-gradient(180deg, rgba(20, 24, 33, 0.75) 0%, rgba(14, 18, 25, 0.85) 100%);
+  background: var(--competency-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+  box-shadow: var(--card-shadow), var(--card-inset);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .competency-box:hover {
-  border-color: rgba(99, 102, 241, 0.35);
-  box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(99, 102, 241, 0.2);
+  border-color: var(--competency-border-hover);
+  box-shadow: var(--card-shadow-hover), var(--competency-inset-hover);
   transform: translateY(-2px);
 }
 
@@ -531,15 +571,15 @@ body {
 .contact-card {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(20, 24, 33, 0.9) 0%, rgba(11, 14, 20, 0.98) 100%);
-  border: 1px solid rgba(56, 189, 248, 0.25);
+  background: var(--contact-card-bg);
+  border: 1px solid var(--contact-card-border);
   border-radius: var(--radius-lg);
   padding: 2.75rem;
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 2.5rem;
   align-items: center;
-  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(56, 189, 248, 0.3);
+  box-shadow: var(--contact-card-shadow);
 }
 
 .contact-card::before {
@@ -549,7 +589,7 @@ body {
   right: -80px;
   width: 320px;
   height: 320px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(56, 189, 248, 0) 70%);
+  background: var(--contact-glow);
   pointer-events: none;
 }
 
@@ -597,7 +637,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.75);
+  background: var(--modal-overlay-bg);
   backdrop-filter: blur(8px);
   z-index: 100;
   display: flex;
@@ -615,7 +655,7 @@ body {
 }
 
 .modal-box {
-  background: var(--bg);
+  background: var(--modal-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   width: 100%;
@@ -623,7 +663,7 @@ body {
   max-height: 90vh;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--card-shadow-hover);
   overflow: hidden;
 }
 
@@ -669,7 +709,7 @@ body {
   padding: 0.75rem 1.25rem;
   border-radius: var(--radius);
   font-size: 0.85rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--card-shadow-hover);
   display: flex;
   align-items: center;
   gap: 0.5rem;

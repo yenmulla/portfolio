@@ -225,3 +225,4 @@ const pngData = resvg.render();
 const pngBuffer = pngData.asPng();
 fs.writeFileSync(pngPath, pngBuffer);
 console.log('Rendered studio-quality PNG:', pngPath, pngBuffer.length, 'bytes');
+

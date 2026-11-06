@@ -16,6 +16,14 @@
     <!-- Theme & App Icons -->
     <meta name="theme-color" content="#0a0e17" />
     <meta name="color-scheme" content="dark light" />
+    <script>
+      (function() {
+        var savedTheme = localStorage.getItem('gm_theme');
+        if (savedTheme) {
+          document.documentElement.setAttribute('data-theme', savedTheme);
+        }
+      })();
+    </script>
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
