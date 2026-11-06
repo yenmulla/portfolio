@@ -108,7 +108,7 @@ function renderApp() {
       <div class="container nav-inner">
         <a href="#" class="nav-brand">
           <span class="nav-brand-dot"></span>
-          <span>Geoffrey Mwangi</span>
+          <span>Geoffrey Githii</span>
         </a>
 
         <ul class="nav-links">
@@ -125,7 +125,7 @@ function renderApp() {
           <button id="view-pdf-btn" class="btn btn-secondary">
             ${icons.externalLink} View PDF
           </button>
-          <a href="/Geoffrey_Mwangi_Portfolio.pdf" download="Geoffrey_Mwangi_Portfolio.pdf" class="btn btn-primary">
+          <a href="/Geoffrey_Githii_Portfolio.pdf" download="Geoffrey_Githii_Portfolio.pdf" class="btn btn-primary">
             ${icons.download} Download
           </a>
         </div>
@@ -136,7 +136,7 @@ function renderApp() {
       <!-- Hero Section -->
       <section id="overview" class="hero">
         <div class="container">
-          <h1 class="hero-title">Geoffrey Mwangi</h1>
+          <h1 class="hero-title">Geoffrey Githii</h1>
           <div class="hero-subtitle">Software Engineering Portfolio & Technical Track Record</div>
 
           <p class="hero-bio">
@@ -305,7 +305,7 @@ function renderApp() {
                 <span>GitHub</span>
                 <span>yenmulla ${icons.arrowUpRight}</span>
               </a>
-              <a href="/Geoffrey_Mwangi_Portfolio.pdf" download="Geoffrey_Mwangi_Portfolio.pdf" class="contact-row-btn">
+              <a href="/Geoffrey_Githii_Portfolio.pdf" download="Geoffrey_Githii_Portfolio.pdf" class="contact-row-btn">
                 <span>Resume / CV</span>
                 <span>Download PDF ${icons.download}</span>
               </a>
@@ -319,7 +319,7 @@ function renderApp() {
     <footer class="footer">
       <div class="container footer-inner">
         <div>
-          Geoffrey Mwangi &mdash; Software Engineering Portfolio & Technical Track Record
+          Geoffrey Githii &mdash; Software Engineering Portfolio & Technical Track Record
         </div>
         <div>
           Nairobi, Kenya
@@ -331,11 +331,11 @@ function renderApp() {
     <div id="pdf-modal" class="modal-overlay">
       <div class="modal-box">
         <div class="modal-header">
-          <span class="modal-title">Geoffrey Mwangi — Official Portfolio PDF</span>
+          <span class="modal-title">Geoffrey Githii — Official Portfolio PDF</span>
           <button id="close-modal-btn" class="modal-close">&times;</button>
         </div>
         <div class="modal-body">
-          <iframe src="/Geoffrey_Mwangi_Portfolio.pdf" style="width: 100%; height: 100%; border: none;"></iframe>
+          <iframe src="/Geoffrey_Githii_Portfolio.pdf" style="width: 100%; height: 100%; border: none;"></iframe>
         </div>
       </div>
     </div>

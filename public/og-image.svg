@@ -36,7 +36,7 @@
   </g>
 
   <!-- Main Headline -->
-  <text x="100" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1">Geoffrey Mwangi (Jeff)</text>
+  <text x="100" y="210" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif" font-size="64" font-weight="800" fill="#ffffff" letter-spacing="-1">Geoffrey Githii (Jeff)</text>
   
   <!-- Subtitle -->
   <text x="100" y="265" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif" font-size="26" font-weight="600" fill="#94a3b8">Software Engineer &amp; System Architect</text>

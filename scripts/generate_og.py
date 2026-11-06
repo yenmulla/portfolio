@@ -192,8 +192,8 @@ for dy in range(-7, 8):
 
 draw_text("JEFF.MOONLIST.SITE  |  OFFICIAL TECHNICAL PORTFOLIO", badge_x + 18, badge_y, scale=2, color=(56, 189, 248))
 
-# Main Title: GEOFFREY MWANGI (JEFF)
-draw_text("GEOFFREY MWANGI", 110, 165, scale=7, color=(255, 255, 255))
+# Main Title: GEOFFREY GITHII (JEFF)
+draw_text("GEOFFREY GITHII", 110, 165, scale=7, color=(255, 255, 255))
 
 # Subtitle
 draw_text("SOFTWARE ENGINEER & SYSTEM ARCHITECT", 110, 270, scale=3, color=(148, 163, 184))

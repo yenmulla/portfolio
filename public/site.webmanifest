@@ -1,7 +1,7 @@
 {
-  "name": "Geoffrey Mwangi (Jeff) — Portfolio",
-  "short_name": "Jeff Mwangi",
-  "description": "Technical portfolio & engineering track record of Geoffrey Mwangi (Jeff). Software Engineer & System Architect.",
+  "name": "Geoffrey Githii (Jeff) — Portfolio",
+  "short_name": "Jeff Githii",
+  "description": "Technical portfolio & engineering track record of Geoffrey Githii (Jeff). Software Engineer & System Architect.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0e17",
@@ -15,4 +15,3 @@
     }
   ]
 }
-
