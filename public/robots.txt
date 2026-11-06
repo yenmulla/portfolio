@@ -1,0 +1,7 @@
+# robots.txt for https://jeff.moonlist.site/
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://jeff.moonlist.site/sitemap.xml
+
