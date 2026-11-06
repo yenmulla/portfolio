@@ -18,6 +18,7 @@ const icons = {
   folderOpen: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>`,
   fileTs: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>`,
   fileSol: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>`,
+  search: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>`,
   terminal: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>`,
   chevronDown: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>`,
   chevronRight: `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>`,
@@ -246,10 +247,6 @@ function renderPortfolioMode(app: HTMLElement) {
         </a>
 
         <ul class="nav-links">
-          <li><a href="#overview">Overview</a></li>
-          <li><a href="#ventures">Ventures & Impact</a></li>
-          <li><a href="#competencies">Capabilities</a></li>
-          <li><a href="#contact">Contact</a></li>
         </ul>
 
         <div class="nav-actions">
@@ -394,25 +391,55 @@ function renderPortfolioMode(app: HTMLElement) {
   `;
 }
 
-// ─── IDE Mode ─────────────────────────────────────────────────────────────────
+// ─── IDE Mode State & Helpers ──────────────────────────────────────────────────
+let terminalLogs: Array<{ type: 'input' | 'out' | 'success' | 'err'; text: string }> = [
+  { type: 'input', text: 'git log --oneline -3' },
+  { type: 'out', text: 'dba73ab feat: dual-mode portfolio — IDE technical view' },
+  { type: 'out', text: '5dbc9f5 feat: LLM readiness, llms.txt, semantic HTML' },
+  { type: 'out', text: '3169ade chore: Google Search Console verification' },
+  { type: 'input', text: 'npm test' },
+  { type: 'success', text: '✓ PASS 6/6 test suites — 100% test coverage across all ventures' },
+];
+let isSidebarOpen = true;
+let activeSidebarTab: 'explorer' | 'git' = 'explorer';
+let activeTermTab: 'terminal' | 'problems' | 'output' = 'terminal';
+let isCommandPaletteOpen = false;
+let termCmdHistory: string[] = ['git log --oneline -3', 'npm test'];
+let termHistoryIdx = -1;
+
+// ─── IDE Mode Render ──────────────────────────────────────────────────────────
 function renderIDEMode(app: HTMLElement) {
   app.className = 'mode-ide';
-
-  const activeVenture = ventures.find(v => v.id === activeIdeFile) || ventures[0];
 
   const extColor: Record<string, string> = {
     ts: '#3b82f6',
     sol: '#a78bfa',
     dart: '#06b6d4',
+    json: '#34d399',
+    md: '#f59e0b',
   };
   const extBadge: Record<string, string> = {
     ts: 'TS',
     sol: 'SOL',
     dart: 'DART',
+    json: 'JSON',
+    md: 'MD',
   };
 
-  // Build the "code" content for the main editor panel
-  const codeLines = buildCodeView(activeVenture);
+  const allTabs = [
+    ...ventures.map(v => ({ id: v.id, label: v.fileLabel, ext: v.fileExt, type: 'venture' as const, isCurrent: v.isCurrent })),
+    { id: 'stack', label: 'tech-stack.json', ext: 'json', type: 'special' as const, isCurrent: false },
+    { id: 'contact', label: 'contact.md', ext: 'md', type: 'special' as const, isCurrent: false },
+  ];
+
+  const currentFile = allTabs.find(t => t.id === activeIdeFile) || allTabs[0];
+  const activeVenture = ventures.find(v => v.id === activeIdeFile) || ventures[0];
+
+  // Build code view
+  const codeLines = buildCodeView(activeIdeFile, activeVenture);
+
+  // Dynamic Outline
+  const outlineItems = getOutlineItems(activeIdeFile);
 
   app.innerHTML = `
     <!-- IDE Title Bar -->
@@ -426,11 +453,9 @@ function renderIDEMode(app: HTMLElement) {
         <span class="ide-title-text">geoffrey-githii — portfolio</span>
       </div>
       <div class="ide-titlebar-center">
-        <div class="ide-breadcrumb">
-          <span class="ide-bc-seg">src</span>
-          <span class="ide-bc-sep">›</span>
-          <span class="ide-bc-seg active">${activeVenture.fileLabel}</span>
-        </div>
+        <button class="ide-cmd-btn" id="ide-cmd-btn" title="Quick Open (Ctrl+K)">
+          ${icons.search} <span>geoffrey-githii — Quick Open (Ctrl+K)</span>
+        </button>
       </div>
       <div class="ide-titlebar-right">
         <div class="ide-mode-pill">
@@ -446,61 +471,73 @@ function renderIDEMode(app: HTMLElement) {
 
       <!-- Activity Bar (far left icon rail) -->
       <div class="ide-activitybar">
-        <button class="ide-ab-btn active" title="Explorer">${icons.folderOpen}</button>
-        <button class="ide-ab-btn" title="Git">${icons.gitBranch}</button>
-        <button class="ide-ab-btn" title="Terminal">${icons.terminal}</button>
+        <button class="ide-ab-btn ${isSidebarOpen && activeSidebarTab === 'explorer' ? 'active' : ''}" id="ide-ab-explorer" title="Explorer">${icons.folderOpen}</button>
+        <button class="ide-ab-btn ${isSidebarOpen && activeSidebarTab === 'git' ? 'active' : ''}" id="ide-ab-git" title="Source Control (Git)">${icons.gitBranch}</button>
+        <button class="ide-ab-btn" id="ide-ab-terminal" title="Focus Terminal">${icons.terminal}</button>
         <div class="ide-ab-spacer"></div>
         <a href="mailto:jeff@app.moonlist.app" class="ide-ab-btn" title="Contact">${icons.mail}</a>
         <a href="https://github.com/yenmulla" target="_blank" rel="noopener noreferrer" class="ide-ab-btn" title="GitHub">${icons.github}</a>
       </div>
 
-      <!-- Sidebar / Explorer -->
-      <div class="ide-sidebar">
-        <div class="ide-sidebar-header">EXPLORER</div>
-        <div class="ide-tree">
-          <!-- Workspace root -->
-          <div class="ide-tree-root">
-            ${icons.folderOpen}
-            <span>GEOFFREY-GITHII</span>
-          </div>
-          <!-- src folder -->
-          <div class="ide-tree-group">
-            <div class="ide-tree-folder open">
-              ${icons.chevronDown}
+      <!-- Sidebar / Explorer / Git -->
+      <div class="ide-sidebar ${isSidebarOpen ? '' : 'collapsed'}" id="ide-sidebar">
+        ${activeSidebarTab === 'explorer' ? `
+          <div class="ide-sidebar-header">EXPLORER</div>
+          <div class="ide-tree">
+            <div class="ide-tree-root">
               ${icons.folderOpen}
-              <span>src</span>
+              <span>GEOFFREY-GITHII</span>
             </div>
-            <div class="ide-tree-files">
-              ${ventures.map(v => `
-                <div class="ide-tree-file ${v.id === activeIdeFile ? 'active' : ''}" data-venture="${v.id}">
-                  <span class="ide-file-icon" style="color:${extColor[v.fileExt] || '#9ca3af'}">
-                    ${icons.fileTs}
-                  </span>
-                  <span class="ide-file-label">${v.fileLabel}</span>
-                  ${v.isCurrent ? '<span class="ide-file-dot"></span>' : ''}
+            <div class="ide-tree-group">
+              <div class="ide-tree-folder open">
+                ${icons.chevronDown}
+                ${icons.folderOpen}
+                <span>src</span>
+              </div>
+              <div class="ide-tree-files">
+                ${ventures.map(v => `
+                  <div class="ide-tree-file ${v.id === activeIdeFile ? 'active' : ''}" data-venture="${v.id}">
+                    <span class="ide-file-icon" style="color:${extColor[v.fileExt] || '#9ca3af'}">
+                      ${icons.fileTs}
+                    </span>
+                    <span class="ide-file-label">${v.fileLabel}</span>
+                    ${v.isCurrent ? '<span class="ide-file-dot"></span>' : ''}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            <div class="ide-tree-group">
+              <div class="ide-tree-folder open">
+                ${icons.chevronDown}
+                ${icons.folder}
+                <span>stack</span>
+              </div>
+              <div class="ide-tree-files">
+                <div class="ide-tree-file ${activeIdeFile === 'stack' ? 'active' : ''}" data-special="stack">
+                  <span class="ide-file-icon" style="color:#34d399">${icons.fileTs}</span>
+                  <span class="ide-file-label">tech-stack.json</span>
                 </div>
-              `).join('')}
-            </div>
-          </div>
-          <!-- Stack overview -->
-          <div class="ide-tree-group">
-            <div class="ide-tree-folder open">
-              ${icons.chevronDown}
-              ${icons.folder}
-              <span>stack</span>
-            </div>
-            <div class="ide-tree-files">
-              <div class="ide-tree-file" data-special="stack">
-                <span class="ide-file-icon" style="color:#34d399">${icons.fileTs}</span>
-                <span class="ide-file-label">tech-stack.json</span>
-              </div>
-              <div class="ide-tree-file" data-special="contact">
-                <span class="ide-file-icon" style="color:#f59e0b">${icons.fileTs}</span>
-                <span class="ide-file-label">contact.md</span>
+                <div class="ide-tree-file ${activeIdeFile === 'contact' ? 'active' : ''}" data-special="contact">
+                  <span class="ide-file-icon" style="color:#f59e0b">${icons.fileTs}</span>
+                  <span class="ide-file-label">contact.md</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        ` : `
+          <div class="ide-sidebar-header">SOURCE CONTROL: GIT</div>
+          <div class="ide-git-panel">
+            <div class="ide-git-branch-info">
+              ${icons.gitBranch} <strong>main*</strong> <span class="ide-git-badge">3 changes</span>
+            </div>
+            <div class="ide-git-sec-title">STAGED CHANGES</div>
+            <div class="ide-git-item"><span class="ide-git-status-m">M</span> index.html</div>
+            <div class="ide-git-sec-title">WORKING CHANGES</div>
+            <div class="ide-git-item"><span class="ide-git-status-m">M</span> src/main.ts</div>
+            <div class="ide-git-item"><span class="ide-git-status-m">M</span> src/style.css</div>
+            <button class="ide-git-push-btn" id="ide-git-push-btn">${icons.gitBranch} Sync & Push to GitHub</button>
+          </div>
+        `}
       </div>
 
       <!-- Main Editor Area -->
@@ -508,11 +545,11 @@ function renderIDEMode(app: HTMLElement) {
 
         <!-- Editor Tabs -->
         <div class="ide-tabs">
-          ${ventures.map(v => `
-            <div class="ide-tab ${v.id === activeIdeFile ? 'active' : ''}" data-venture="${v.id}">
-              <span class="ide-tab-icon" style="color:${extColor[v.fileExt] || '#9ca3af'}">${extBadge[v.fileExt] || 'JS'}</span>
-              <span class="ide-tab-label">${v.fileLabel}</span>
-              ${v.isCurrent ? '<span class="ide-tab-modified"></span>' : ''}
+          ${allTabs.map(t => `
+            <div class="ide-tab ${t.id === activeIdeFile ? 'active' : ''}" ${t.type === 'venture' ? `data-venture="${t.id}"` : `data-special="${t.id}"`}>
+              <span class="ide-tab-icon" style="color:${extColor[t.ext] || '#9ca3af'}">${extBadge[t.ext] || 'JS'}</span>
+              <span class="ide-tab-label">${t.label}</span>
+              ${t.isCurrent ? '<span class="ide-tab-modified"></span>' : ''}
               <span class="ide-tab-close">${icons.close}</span>
             </div>
           `).join('')}
@@ -520,31 +557,31 @@ function renderIDEMode(app: HTMLElement) {
 
         <!-- Code Editor -->
         <div class="ide-editor">
-          <div class="ide-editor-scroll">
-            <div class="ide-line-numbers">
-              ${codeLines.map((_, i) => `<div class="ide-ln">${i + 1}</div>`).join('')}
+          <div class="ide-editor-scroll" id="ide-editor-scroll">
+            <div class="ide-line-numbers" id="ide-line-numbers">
+              ${codeLines.map((_, i) => `<div class="ide-ln" data-ln="${i}">${i + 1}</div>`).join('')}
             </div>
-            <div class="ide-code-content">
-              ${codeLines.map(l => `<div class="ide-code-line">${l}</div>`).join('')}
+            <div class="ide-code-content" id="ide-code-content">
+              ${codeLines.map((l, i) => `<div class="ide-code-line" data-line="${i}">${l}</div>`).join('')}
             </div>
           </div>
         </div>
 
-        <!-- Terminal Panel -->
+        <!-- Interactive Terminal Panel -->
         <div class="ide-terminal">
           <div class="ide-terminal-tabs">
-            <span class="ide-terminal-tab active">${icons.terminal} TERMINAL</span>
-            <span class="ide-terminal-tab">PROBLEMS <span class="ide-term-badge">0</span></span>
-            <span class="ide-terminal-tab">OUTPUT</span>
+            <span class="ide-terminal-tab ${activeTermTab === 'terminal' ? 'active' : ''}" data-term-tab="terminal">${icons.terminal} TERMINAL</span>
+            <span class="ide-terminal-tab ${activeTermTab === 'problems' ? 'active' : ''}" data-term-tab="problems">PROBLEMS <span class="ide-term-badge">0</span></span>
+            <span class="ide-terminal-tab ${activeTermTab === 'output' ? 'active' : ''}" data-term-tab="output">OUTPUT</span>
+            <div class="ide-term-chips">
+              <button class="ide-chip" data-cmd="npm test">npm test</button>
+              <button class="ide-chip" data-cmd="git status">git status</button>
+              <button class="ide-chip" data-cmd="cat stack">cat stack</button>
+              <button class="ide-chip" data-cmd="help">help</button>
+            </div>
           </div>
-          <div class="ide-terminal-body">
-            <div class="ide-term-line"><span class="ide-term-prompt">➜</span> <span class="ide-term-path">~/portfolio</span> <span class="ide-term-cmd">git log --oneline -3</span></div>
-            <div class="ide-term-line ide-term-out">dba73ab feat: dual-mode portfolio — IDE technical view</div>
-            <div class="ide-term-line ide-term-out">5dbc9f5 feat: LLM readiness, llms.txt, semantic HTML</div>
-            <div class="ide-term-line ide-term-out">3169ade chore: Google Search Console verification</div>
-            <div class="ide-term-line"><span class="ide-term-prompt">➜</span> <span class="ide-term-path">~/portfolio</span> <span class="ide-term-cmd">npm run build</span></div>
-            <div class="ide-term-line ide-term-out ide-term-success">✓ built in 1.2s — dist/assets/index.js 32.67 kB │ gzip: 9.12 kB</div>
-            <div class="ide-term-line"><span class="ide-term-prompt">➜</span> <span class="ide-term-path">~/portfolio</span> <span class="ide-term-cursor">█</span></div>
+          <div class="ide-terminal-body" id="ide-terminal-body">
+            ${renderTerminalTabBody()}
           </div>
         </div>
 
@@ -554,18 +591,11 @@ function renderIDEMode(app: HTMLElement) {
       <div class="ide-minimap">
         <div class="ide-minimap-header">OUTLINE</div>
         <div class="ide-outline">
-          <div class="ide-outline-item">
-            <span class="ide-oi-kw">interface</span> <span class="ide-oi-name">VentureSpec</span>
-          </div>
-          <div class="ide-outline-item">
-            <span class="ide-oi-kw">const</span> <span class="ide-oi-name">architecture</span>
-          </div>
-          <div class="ide-outline-item">
-            <span class="ide-oi-kw">const</span> <span class="ide-oi-name">stack</span>
-          </div>
-          <div class="ide-outline-item">
-            <span class="ide-oi-kw">fn</span> <span class="ide-oi-name">deploy()</span>
-          </div>
+          ${outlineItems.map(item => `
+            <div class="ide-outline-item" data-outline-name="${item.name}">
+              <span class="ide-oi-kw">${item.kw}</span> <span class="ide-oi-name">${item.name}</span>
+            </div>
+          `).join('')}
         </div>
 
         <div class="ide-minimap-header" style="margin-top:1.5rem;">METRICS</div>
@@ -581,23 +611,135 @@ function renderIDEMode(app: HTMLElement) {
     <!-- IDE Status Bar -->
     <div class="ide-statusbar">
       <div class="ide-status-left">
-        <span class="ide-status-item ide-status-branch">${icons.gitBranch} main</span>
+        <span class="ide-status-item ide-status-branch">${icons.gitBranch} main*</span>
         <span class="ide-status-item">${icons.error} 0 &nbsp; ⚠ 0</span>
       </div>
       <div class="ide-status-center">
         Geoffrey Githii &nbsp;·&nbsp; Software Engineer & System Architect &nbsp;·&nbsp; Nairobi, Kenya
       </div>
       <div class="ide-status-right">
-        <span class="ide-status-item">${activeVenture.fileExt.toUpperCase()}</span>
+        <span class="ide-status-item">${currentFile.ext.toUpperCase()}</span>
         <span class="ide-status-item">UTF-8</span>
         <span class="ide-status-item">TypeScript 7.0.2</span>
         <span class="ide-status-item ide-status-live">${icons.sparkles} jeff.moonlist.site</span>
       </div>
     </div>
 
+    <!-- Command Palette Modal -->
+    <div id="ide-cmd-palette" class="ide-cmd-palette-overlay ${isCommandPaletteOpen ? 'active' : ''}">
+      <div class="ide-cmd-palette-box">
+        <div class="ide-cmd-input-row">
+          <span class="ide-cmd-icon">${icons.search}</span>
+          <input type="text" id="ide-cmd-input" placeholder="Type a file name or command... (e.g. 'stack', 'test', 'overview')" autocomplete="off" />
+          <span class="ide-cmd-kbd">ESC</span>
+        </div>
+        <div class="ide-cmd-results" id="ide-cmd-results">
+          ${renderPaletteResults('')}
+        </div>
+      </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast" class="toast"><span id="toast-text">Copied</span></div>
   `;
+}
+
+function renderTerminalTabBody(): string {
+  if (activeTermTab === 'problems') {
+    return `
+      <div class="ide-problems-body">
+        <div class="ide-prob-item"><span class="ide-prob-icon green">✓</span> TypeScript 7.0.2 — 0 syntax or type errors in active workspace</div>
+        <div class="ide-prob-item"><span class="ide-prob-icon green">✓</span> Solidity 0.8.20 — ReentrancyGuard and Ownable spec checks passed</div>
+        <div class="ide-prob-item"><span class="ide-prob-icon green">✓</span> Flutter Bloc — State management event streams validated</div>
+      </div>
+    `;
+  }
+  if (activeTermTab === 'output') {
+    return `
+      <div class="ide-output-body">
+        <div class="ide-out-line">[vite] dev server running at http://localhost:5173/</div>
+        <div class="ide-out-line">[vite] hmr update /src/main.ts (441ms)</div>
+        <div class="ide-out-line">[build] production assets optimized in dist/</div>
+        <div class="ide-out-line">[status] All 6 project specs active — 100% test coverage</div>
+      </div>
+    `;
+  }
+  return renderTerminalLogsHTML();
+}
+
+function renderPaletteResults(query: string): string {
+  const q = query.toLowerCase().trim();
+  const items = [
+    { label: 'moonlist-app.ts', sub: 'Venture File — Main Web Application', action: 'file', id: 'moonlist-app' },
+    { label: 'moonlist-tg.ts', sub: 'Venture File — Telegram Ecosystem', action: 'file', id: 'moonlist-tg' },
+    { label: 'moonlist-token.sol', sub: 'Venture File — Token & Staking Protocol', action: 'file', id: 'moonlist-token' },
+    { label: 'moonlist-dex.ts', sub: 'Venture File — DEX Router & AMM', action: 'file', id: 'moonlist-dex' },
+    { label: 'moonlist-analytics.ts', sub: 'Venture File — Analytics Proxy', action: 'file', id: 'moonlist-analytics' },
+    { label: 'moon-wallet.dart', sub: 'Venture File — Flutter Mobile Wallet', action: 'file', id: 'moon-wallet' },
+    { label: 'tech-stack.json', sub: 'Stack File — Languages, Frameworks & Cloud', action: 'special', id: 'stack' },
+    { label: 'contact.md', sub: 'Contact File — Direct Email, Telegram & GitHub', action: 'special', id: 'contact' },
+    { label: 'npm test', sub: 'Action — Run automated Vitest test suite', action: 'cmd', cmd: 'npm test' },
+    { label: 'git status', sub: 'Action — Inspect repository branch status', action: 'cmd', cmd: 'git status' },
+    { label: 'Switch to Executive Overview', sub: 'Action — Toggle Portfolio View', action: 'mode', mode: 'executive' },
+    { label: 'Toggle Light / Dark Theme', sub: 'Action — Switch Color Scheme', action: 'theme' },
+  ];
+
+  const filtered = q ? items.filter(i => i.label.toLowerCase().includes(q) || i.sub.toLowerCase().includes(q)) : items;
+
+  if (filtered.length === 0) {
+    return `<div class="ide-cmd-no-res">No matching files or commands found</div>`;
+  }
+
+  return filtered.map((item, idx) => `
+    <div class="ide-cmd-item ${idx === 0 ? 'selected' : ''}" data-cmd-action="${item.action}" ${item.id ? `data-id="${item.id}"` : ''} ${item.cmd ? `data-cmd="${item.cmd}"` : ''} ${item.mode ? `data-mode="${item.mode}"` : ''}>
+      <span class="ide-cmd-item-title">${escapeLine(item.label)}</span>
+      <span class="ide-cmd-item-sub">${escapeLine(item.sub)}</span>
+    </div>
+  `).join('');
+}
+
+function renderTerminalLogsHTML(): string {
+  const logLines = terminalLogs.map(l => {
+    if (l.type === 'input') return `<div class="ide-term-line"><span class="ide-term-prompt">➜</span> <span class="ide-term-path">~/portfolio</span> <span class="ide-term-cmd">${escapeLine(l.text)}</span></div>`;
+    if (l.type === 'success') return `<div class="ide-term-line ide-term-out ide-term-success">${escapeLine(l.text)}</div>`;
+    if (l.type === 'err') return `<div class="ide-term-line ide-term-out ide-term-err">${escapeLine(l.text)}</div>`;
+    return `<div class="ide-term-line ide-term-out">${escapeLine(l.text)}</div>`;
+  }).join('');
+
+  return `
+    ${logLines}
+    <div class="ide-term-input-row">
+      <span class="ide-term-prompt">➜</span>
+      <span class="ide-term-path">~/portfolio</span>
+      <input type="text" id="ide-term-input" class="ide-term-input" placeholder="Type a command (try 'help', 'npm test', 'git status', 'clear')..." autocomplete="off" spellcheck="false" />
+    </div>
+  `;
+}
+
+function getOutlineItems(activeFile: string): Array<{ kw: string; name: string }> {
+  if (activeFile === 'stack') {
+    return [
+      { kw: 'key', name: 'developer' },
+      { kw: 'key', name: 'languages' },
+      { kw: 'key', name: 'mobile_frontend' },
+      { kw: 'key', name: 'backend_cloud' },
+      { kw: 'key', name: 'web3_blockchain' },
+      { kw: 'key', name: 'tools_devops' }
+    ];
+  }
+  if (activeFile === 'contact') {
+    return [
+      { kw: 'h1', name: 'Geoffrey Githii' },
+      { kw: 'h2', name: 'Direct Contact' },
+      { kw: 'h2', name: 'Core Strengths' }
+    ];
+  }
+  return [
+    { kw: 'interface', name: 'VentureSpec' },
+    { kw: 'const', name: 'architecture' },
+    { kw: 'const', name: 'stack' },
+    { kw: 'fn', name: 'deploy()' }
+  ];
 }
 
 // ─── Code View Builder ─────────────────────────────────────────────────────────
@@ -608,7 +750,48 @@ function escapeLine(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
-function buildCodeView(v: Venture): string[] {
+function buildCodeView(activeFile: string, v: Venture): string[] {
+  const lines: string[] = [];
+
+  const push = (...parts: string[]) => lines.push(parts.join(''));
+  const blank = () => lines.push('');
+
+  if (activeFile === 'stack') {
+    push(`${hl('comment', '// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')}`);
+    push(`${hl('comment', '//  Geoffrey Githii — Technical Stack & Core Competencies')}`);
+    push(`${hl('comment', '// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')}`);
+    blank();
+    push(`{`);
+    push(`  ${hl('kw', '"developer"')}: ${hl('str', '"Geoffrey Githii"')},`);
+    push(`  ${hl('kw', '"title"')}: ${hl('str', '"Product Builder & Engineering Leader"')},`);
+    push(`  ${hl('kw', '"location"')}: ${hl('str', '"Nairobi, Kenya"')},`);
+    push(`  ${hl('kw', '"languages"')}: [${hl('str', '"TypeScript"')}, ${hl('str', '"Solidity"')}, ${hl('str', '"Dart"')}, ${hl('str', '"JavaScript"')}, ${hl('str', '"Python"')}, ${hl('str', '"SQL"')}],`);
+    push(`  ${hl('kw', '"mobile_frontend"')}: [${hl('str', '"Flutter"')}, ${hl('str', '"React Native"')}, ${hl('str', '"Jetpack Compose"')}, ${hl('str', '"React.js"')}, ${hl('str', '"Vite"')}, ${hl('str', '"TailwindCSS"')}],`);
+    push(`  ${hl('kw', '"backend_cloud"')}: [${hl('str', '"Node.js"')}, ${hl('str', '"Express"')}, ${hl('str', '"Firebase"')}, ${hl('str', '"PostgreSQL"')}, ${hl('str', '"MongoDB"')}, ${hl('str', '"Redis"')}, ${hl('str', '"Docker"')}],`);
+    push(`  ${hl('kw', '"web3_blockchain"')}: [${hl('str', '"EVM"')}, ${hl('str', '"Ethers.js / Viem"')}, ${hl('str', '"Wagmi"')}, ${hl('str', '"Solidity Smart Contracts"')}, ${hl('str', '"Multi-chain RPCs"')}],`);
+    push(`  ${hl('kw', '"tools_devops"')}: [${hl('str', '"Git"')}, ${hl('str', '"GitHub Actions"')}, ${hl('str', '"Vercel"')}, ${hl('str', '"Linux CLI"')}, ${hl('str', '"Jest / Vitest"')}]`);
+    push(`}`);
+    return lines;
+  }
+
+  if (activeFile === 'contact') {
+    push(`${hl('kw', '# Geoffrey Githii — Software Engineer & System Architect')}`);
+    blank();
+    push(`> Building high-impact digital products, mobile applications, and Web3 protocols.`);
+    blank();
+    push(`${hl('type', '## Direct Contact')}`);
+    push(`- **Email**: ${hl('str', 'jeff@app.moonlist.app')}`);
+    push(`- **Telegram**: ${hl('str', 'https://t.me/moon_jeff')}`);
+    push(`- **GitHub**: ${hl('str', 'https://github.com/yenmulla')}`);
+    push(`- **Location**: ${hl('str', 'Nairobi, Kenya')}`);
+    blank();
+    push(`${hl('type', '## Core Strengths')}`);
+    push(`- **Web3 & EVM Protocols**: Smart contract security, DeFi tokenomics, multi-chain integrations.`);
+    push(`- **Mobile Applications**: Cross-platform Flutter & React Native apps with offline caching & state sync.`);
+    push(`- **Full-Stack Systems**: Node.js/TypeScript microservices, real-time WebSocket sync, Firebase cloud architecture.`);
+    return lines;
+  }
+
   const t = v.technical;
   const fileComment: Record<string, string> = {
     ts: '//',
@@ -616,11 +799,6 @@ function buildCodeView(v: Venture): string[] {
     dart: '//',
   };
   const cmt = fileComment[v.fileExt] || '//';
-
-  const lines: string[] = [];
-
-  const push = (...parts: string[]) => lines.push(parts.join(''));
-  const blank = () => lines.push('');
 
   // File header comment
   push(`${hl('comment', `${cmt} ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`)}`);
@@ -919,6 +1097,71 @@ function attachEventHandlers() {
     });
   });
 
+  // IDE Command Palette Button
+  const cmdBtn = document.getElementById('ide-cmd-btn');
+  if (cmdBtn) {
+    cmdBtn.addEventListener('click', () => {
+      isCommandPaletteOpen = true;
+      renderApp();
+      setTimeout(() => {
+        const input = document.getElementById('ide-cmd-input') as HTMLInputElement;
+        if (input) input.focus();
+      }, 50);
+    });
+  }
+
+  // Command Palette Overlay & Search
+  const paletteInput = document.getElementById('ide-cmd-input') as HTMLInputElement;
+  const paletteResults = document.getElementById('ide-cmd-results');
+  const paletteModal = document.getElementById('ide-cmd-palette');
+  if (paletteInput && paletteResults) {
+    paletteInput.addEventListener('input', () => {
+      paletteResults.innerHTML = renderPaletteResults(paletteInput.value);
+      attachPaletteItemListeners();
+    });
+    attachPaletteItemListeners();
+  }
+
+  if (paletteModal) {
+    paletteModal.addEventListener('click', (e) => {
+      if (e.target === paletteModal) {
+        isCommandPaletteOpen = false;
+        renderApp();
+      }
+    });
+  }
+
+  function attachPaletteItemListeners() {
+    document.querySelectorAll('.ide-cmd-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const action = (item as HTMLElement).dataset.cmdAction;
+        const id = (item as HTMLElement).dataset.id;
+        const cmd = (item as HTMLElement).dataset.cmd;
+        const mode = (item as HTMLElement).dataset.mode as PortfolioMode;
+
+        isCommandPaletteOpen = false;
+
+        if (action === 'file' || action === 'special') {
+          if (id) activeIdeFile = id;
+          renderApp();
+        } else if (action === 'cmd' && cmd) {
+          renderApp();
+          executeTermCmd(cmd);
+        } else if (action === 'mode' && mode) {
+          activeMode = mode;
+          renderApp();
+        } else if (action === 'theme') {
+          const active = document.documentElement.getAttribute('data-theme');
+          const next = active === 'dark' ? 'light' : 'dark';
+          localStorage.setItem('gm_theme', next);
+          document.documentElement.setAttribute('data-theme', next);
+          renderApp();
+          showToast(`Switched to ${next} theme`);
+        }
+      });
+    });
+  }
+
   // IDE Sidebar file clicks
   document.querySelectorAll('.ide-tree-file[data-venture]').forEach(el => {
     el.addEventListener('click', () => {
@@ -930,11 +1173,23 @@ function attachEventHandlers() {
     });
   });
 
+  // IDE Special file clicks (tree & tabs)
+  document.querySelectorAll('.ide-tree-file[data-special], .ide-tab[data-special]').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.ide-tab-close')) return;
+      const special = (el as HTMLElement).dataset.special;
+      if (special) {
+        activeIdeFile = special;
+        renderApp();
+      }
+    });
+  });
+
   // IDE Tab clicks
   document.querySelectorAll('.ide-tab[data-venture]').forEach(el => {
     el.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
-      // Don't switch on close button click
       if (target.closest('.ide-tab-close')) return;
       const id = (el as HTMLElement).dataset.venture;
       if (id) {
@@ -943,6 +1198,218 @@ function attachEventHandlers() {
       }
     });
   });
+
+  // IDE Tab Close button
+  document.querySelectorAll('.ide-tab-close').forEach(closeBtn => {
+    closeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const tab = closeBtn.closest('.ide-tab') as HTMLElement;
+      if (!tab) return;
+      const ventureId = tab.dataset.venture || tab.dataset.special;
+      if (ventureId === activeIdeFile) {
+        activeIdeFile = ventures[0].id;
+        renderApp();
+      } else {
+        tab.style.display = 'none';
+      }
+    });
+  });
+
+  // Activity bar buttons
+  const abExplorer = document.getElementById('ide-ab-explorer');
+  if (abExplorer) {
+    abExplorer.addEventListener('click', () => {
+      if (activeSidebarTab === 'explorer') {
+        isSidebarOpen = !isSidebarOpen;
+      } else {
+        activeSidebarTab = 'explorer';
+        isSidebarOpen = true;
+      }
+      renderApp();
+    });
+  }
+
+  const abGit = document.getElementById('ide-ab-git');
+  if (abGit) {
+    abGit.addEventListener('click', () => {
+      if (activeSidebarTab === 'git') {
+        isSidebarOpen = !isSidebarOpen;
+      } else {
+        activeSidebarTab = 'git';
+        isSidebarOpen = true;
+      }
+      renderApp();
+    });
+  }
+
+  const abTerminal = document.getElementById('ide-ab-terminal');
+  if (abTerminal) {
+    abTerminal.addEventListener('click', () => {
+      activeTermTab = 'terminal';
+      const termBody = document.getElementById('ide-terminal-body');
+      if (termBody) termBody.innerHTML = renderTerminalTabBody();
+      const input = document.getElementById('ide-term-input');
+      if (input) input.focus();
+    });
+  }
+
+  // Git Push Button
+  const gitPushBtn = document.getElementById('ide-git-push-btn');
+  if (gitPushBtn) {
+    gitPushBtn.addEventListener('click', () => {
+      executeTermCmd('git status');
+      executeTermCmd('git push origin main');
+      showToast('Synced commits with GitHub repository!');
+    });
+  }
+
+  // Terminal Tabs
+  document.querySelectorAll('.ide-terminal-tab[data-term-tab]').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const termTab = (tab as HTMLElement).dataset.termTab as 'terminal' | 'problems' | 'output';
+      if (termTab) {
+        activeTermTab = termTab;
+        const termBody = document.getElementById('ide-terminal-body');
+        if (termBody) termBody.innerHTML = renderTerminalTabBody();
+        document.querySelectorAll('.ide-terminal-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        if (termTab === 'terminal') {
+          const input = document.getElementById('ide-term-input');
+          if (input) input.focus();
+        }
+      }
+    });
+  });
+
+  // Outline Item Click to Scroll
+  document.querySelectorAll('.ide-outline-item[data-outline-name]').forEach(item => {
+    item.addEventListener('click', () => {
+      const name = (item as HTMLElement).dataset.outlineName;
+      if (!name) return;
+      const codeContent = document.getElementById('ide-code-content');
+      if (!codeContent) return;
+
+      const lines = Array.from(codeContent.querySelectorAll('.ide-code-line'));
+      const targetIdx = lines.findIndex(l => l.textContent && l.textContent.toLowerCase().includes(name.toLowerCase().replace('()', '')));
+      if (targetIdx !== -1) {
+        const targetLine = lines[targetIdx] as HTMLElement;
+        targetLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetLine.classList.add('ide-line-flash');
+        setTimeout(() => targetLine.classList.remove('ide-line-flash'), 1500);
+      }
+    });
+  });
+
+  // Code Lines Click Execution
+  document.querySelectorAll('.ide-code-line').forEach(line => {
+    line.addEventListener('click', () => {
+      const text = line.textContent || '';
+      if (text.includes('deploy') || text.includes('distributeFees') || text.includes('fetchPortfolio')) {
+        showToast('Executing code function...');
+        executeTermCmd('npm test');
+      }
+    });
+  });
+
+  // Terminal Chips
+  document.querySelectorAll('.ide-chip[data-cmd]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const cmd = (chip as HTMLElement).dataset.cmd;
+      if (cmd) executeTermCmd(cmd);
+    });
+  });
+
+  // Terminal Input with History
+  const termInput = document.getElementById('ide-term-input') as HTMLInputElement;
+  if (termInput) {
+    termInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = termInput.value;
+        if (val.trim()) {
+          termCmdHistory.push(val.trim());
+          termHistoryIdx = termCmdHistory.length;
+        }
+        termInput.value = '';
+        executeTermCmd(val);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (termCmdHistory.length > 0 && termHistoryIdx > 0) {
+          termHistoryIdx--;
+          termInput.value = termCmdHistory[termHistoryIdx];
+        }
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (termHistoryIdx < termCmdHistory.length - 1) {
+          termHistoryIdx++;
+          termInput.value = termCmdHistory[termHistoryIdx];
+        } else {
+          termHistoryIdx = termCmdHistory.length;
+          termInput.value = '';
+        }
+      }
+    });
+  }
+
+function executeTermCmd(cmd: string) {
+  const trimmed = cmd.trim();
+  if (!trimmed) return;
+
+  terminalLogs.push({ type: 'input', text: trimmed });
+
+  const lower = trimmed.toLowerCase();
+  if (lower === 'clear') {
+    terminalLogs = [];
+  } else if (lower === 'help') {
+    terminalLogs.push({ type: 'out', text: 'Available IDE Terminal Commands:' });
+    terminalLogs.push({ type: 'out', text: '  npm test       - Run full automated test suite for all 6 ventures' });
+    terminalLogs.push({ type: 'out', text: '  git status     - Check git repository status & working tree' });
+    terminalLogs.push({ type: 'out', text: '  cat stack      - Display full technology stack & framework list' });
+    terminalLogs.push({ type: 'out', text: '  cat contact.md - Display direct email, Telegram, and GitHub contact' });
+    terminalLogs.push({ type: 'out', text: '  whoami         - Display developer bio & location' });
+    terminalLogs.push({ type: 'out', text: '  mode           - Toggle between IDE and Executive portfolio view' });
+    terminalLogs.push({ type: 'out', text: '  clear          - Clear terminal history' });
+  } else if (lower === 'npm test' || lower === 'vitest' || lower === 'jest') {
+    terminalLogs.push({ type: 'out', text: '⚡ Running Vite / Vitest test suite...' });
+    terminalLogs.push({ type: 'success', text: '✓ Moonlist Web App (ts) — PASS (14 tests)' });
+    terminalLogs.push({ type: 'success', text: '✓ Moonlist Telegram Ecosystem (ts) — PASS (18 tests)' });
+    terminalLogs.push({ type: 'success', text: '✓ Moonlist Token & Staking Protocol (sol) — PASS (12 tests)' });
+    terminalLogs.push({ type: 'success', text: '✓ Moonlist DEX Router & AMM (ts) — PASS (10 tests)' });
+    terminalLogs.push({ type: 'success', text: '✓ Moonlist Analytics & Indexer (ts) — PASS (8 tests)' });
+    terminalLogs.push({ type: 'success', text: '✓ Moon Wallet Mobile App (dart) — PASS (16 tests)' });
+    terminalLogs.push({ type: 'success', text: '✓ Test Results: 6 passed, 6 total (78 tests)' });
+    terminalLogs.push({ type: 'success', text: '✨ Coverage: 100% Statements, 98% Branches (built in 640ms)' });
+  } else if (lower === 'git status' || lower === 'git branch') {
+    terminalLogs.push({ type: 'out', text: 'On branch main' });
+    terminalLogs.push({ type: 'out', text: "Your branch is up to date with 'origin/main'." });
+    terminalLogs.push({ type: 'success', text: 'nothing to commit, working tree clean' });
+  } else if (lower === 'cat stack' || lower === 'cat tech-stack.json') {
+    terminalLogs.push({ type: 'out', text: 'Languages: TypeScript, Solidity, Dart, JavaScript, Python, SQL' });
+    terminalLogs.push({ type: 'out', text: 'Frontend/Mobile: Flutter, React Native, Jetpack Compose, React.js, Vite' });
+    terminalLogs.push({ type: 'out', text: 'Backend/Cloud: Node.js, Express, Firebase, PostgreSQL, Redis, Docker' });
+    terminalLogs.push({ type: 'out', text: 'Web3: EVM, Ethers.js, Viem, Smart Contract Auditing & Security' });
+  } else if (lower === 'cat contact' || lower === 'cat contact.md' || lower === 'contact') {
+    terminalLogs.push({ type: 'out', text: 'Geoffrey Githii — Product Builder & Engineering Leader' });
+    terminalLogs.push({ type: 'out', text: 'Email: jeff@app.moonlist.app' });
+    terminalLogs.push({ type: 'out', text: 'Telegram: https://t.me/moon_jeff' });
+    terminalLogs.push({ type: 'out', text: 'GitHub: https://github.com/yenmulla' });
+  } else if (lower === 'whoami') {
+    terminalLogs.push({ type: 'out', text: 'Geoffrey Githii — Software Engineer & System Architect (Nairobi, Kenya)' });
+  } else if (lower === 'mode') {
+    activeMode = activeMode === 'technical' ? 'executive' : 'technical';
+    renderApp();
+    return;
+  } else {
+    terminalLogs.push({ type: 'err', text: `command not found: ${trimmed}. Type 'help' for available commands.` });
+  }
+
+  const termBody = document.getElementById('ide-terminal-body');
+  if (termBody) {
+    termBody.innerHTML = renderTerminalLogsHTML();
+    termBody.scrollTop = termBody.scrollHeight;
+    const input = document.getElementById('ide-term-input') as HTMLInputElement;
+    if (input) input.focus();
+  }
+}
 
   // Portfolio filter tabs
   const filterTabs = document.querySelectorAll('.filter-tab');
