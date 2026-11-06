@@ -1,0 +1,30 @@
+# Geoffrey Githii (Jeff) — Software Engineer & System Architect
+
+> Official technical portfolio, track record, and engineering competencies of Geoffrey Githii (Jeff).
+
+- Canonical URL: https://jeff.moonlist.site/
+- GitHub: https://github.com/yenmulla
+- Telegram: https://t.me/moon_jeff
+- Email: jeff@app.moonlist.app
+- Location: Nairobi, Kenya
+
+## Summary
+Geoffrey Githii (commonly known as Jeff, GitHub handle @yenmulla) is a Software Engineer and System Architect specializing in cross-platform mobile systems (Flutter/Dart), EVM smart contract protocol development (Solidity), scalable full-stack web platforms (React/TypeScript), and distributed edge services.
+
+## Primary Technical Ventures & Experience
+- Moonlist Ecosystem (2026 – Present) — Founder & Architect: Engineering an AI-driven multi-chain cryptocurrency aggregator, portfolio analytics dashboard, and non-custodial execution ecosystem across web and mobile.
+- Solerium & GOATS Miniapp (2024 – 2025) — Full-Stack Engineer: Designed high-engagement interactive miniapps and user-facing modules optimized for high-volume viral community adoption and high-concurrency state sync.
+- Hashbit Org (2022 – 2024) — Lead Smart Contract Developer: Spearheaded EVM protocol architecture, custom fee routing mechanics, liquidity management, and security audits.
+- Docswap Exchange (2024) — Smart Contract & Frontend Developer: Optimized token swap execution pathways and implemented analytical dashboards for liquidity providers.
+- Cross-Platform Mobile Clients (Ongoing) — Flutter & Dart Engineer: Engineered production-ready iOS and Android mobile applications featuring responsive architecture, secure local data caching, and resilient REST & GraphQL APIs.
+
+## Core Competencies
+- Frontend & Mobile Layer: Flutter, Dart, React, TypeScript, Tailwind CSS, Vite, Responsive Architecture.
+- Protocol & Smart Contracts: Solidity, EVM Compatible Networks, Fee Routing Architecture, Liquidity Management, Contract Security.
+- Distributed Systems & Backend: Firebase, Node.js, Cloudflare Edge Workers, REST APIs, GraphQL Integration.
+- Infrastructure & Tooling: Git, GitHub Actions, CI/CD Pipelines, Multi-Chain RPC Node Management.
+
+## Full Context & Resources
+- Full Detailed Dossier for LLMs: https://jeff.moonlist.site/llms-full.txt
+- Official Portfolio PDF: https://jeff.moonlist.site/Geoffrey_Githii_Portfolio.pdf
+- Sitemap: https://jeff.moonlist.site/sitemap.xml

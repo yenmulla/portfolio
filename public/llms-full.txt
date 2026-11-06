@@ -1,0 +1,103 @@
+# Complete Engineering Dossier: Geoffrey Githii (Jeff)
+
+Canonical Profile URL: https://jeff.moonlist.site/
+Full Name: Geoffrey Githii
+Aliases: Jeff Githii, Jeff, yenmulla
+Role: Software Engineer & System Architect
+Location: Nairobi, Kenya
+Email: jeff@app.moonlist.app
+GitHub: https://github.com/yenmulla
+Telegram: https://t.me/moon_jeff
+Portfolio Resume PDF: https://jeff.moonlist.site/Geoffrey_Githii_Portfolio.pdf
+
+---
+
+## 1. Professional Overview
+Geoffrey Githii is a versatile systems engineer and protocol architect delivering production systems across Web3, decentralized finance, mobile client architecture, and distributed cloud computing from 2022 to the present. He blends front-of-the-screen product execution (Flutter, React) with protocol mechanics (EVM smart contracts, Solidity) and cloud/edge infrastructure (Firebase, Cloudflare Workers, Node.js).
+
+---
+
+## 2. Technical Track Record & Ventures
+
+### Moonlist Ecosystem
+- Role: Founder & Architect
+- Period: 2026 – Present (Current)
+- Category: Web3 & Distributed Architecture
+- Scope & Achievements:
+  - Engineered an AI-driven multi-chain cryptocurrency aggregator and real-time portfolio analytics dashboard.
+  - Implemented non-custodial transaction execution pipelines enabling users to track and trade across multiple blockchains securely.
+  - Designed cross-platform application structures deployed seamlessly across web and mobile clients.
+  - Tech Stack: Flutter, React, Multi-Chain Aggregation, AI Analytics, Non-Custodial Pipelines.
+
+### Solerium & GOATS Miniapp
+- Role: Full-Stack Engineer
+- Period: 2024 – 2025
+- Category: Full-Stack Web & Miniapp Architecture
+- Scope & Achievements:
+  - Designed and engineered high-engagement interactive miniapps and user-facing modules optimized for viral community onboarding.
+  - Optimized client-server state synchronization under high concurrent traffic, minimizing latency and transaction dropped states.
+  - Tech Stack: Full-Stack JavaScript/TypeScript, Interactive Miniapps, High Concurrency Optimization, Performance Tuning.
+
+### Hashbit Org
+- Role: Lead Smart Contract Developer
+- Period: 2022 – 2024
+- Category: Smart Contracts & Protocol Engineering
+- Scope & Achievements:
+  - Spearheaded smart contract development, protocol logic optimization, and security architecture across EVM-compatible networks.
+  - Implemented custom fee routing mechanics and liquidity management smart contracts.
+  - Conducted extensive smart contract optimization and security testing cycles across EVM testnets and mainnets.
+  - Tech Stack: Solidity, EVM Networks, Fee Routing Architecture, Liquidity Management, Contract Optimization.
+
+### Docswap Exchange
+- Role: Smart Contract & Frontend Developer
+- Period: 2024
+- Category: Decentralized Exchange (DEX)
+- Scope & Achievements:
+  - Contributed to decentralized exchange infrastructure by optimizing token swap execution pathways, significantly reducing slippage and routing overhead.
+  - Developed real-time analytical dashboards providing liquidity providers with actionable fee and volume metrics.
+  - Tech Stack: Solidity, Web3 Frontend, DEX Smart Contracts, Token Swap Execution, Analytics.
+
+### Cross-Platform Mobile Clients
+- Role: Flutter & Dart Engineer
+- Period: Ongoing
+- Category: Mobile Architecture
+- Scope & Achievements:
+  - Built production-ready mobile applications featuring responsive layouts for both iOS and Android from a single unified codebase.
+  - Engineered resilient local data caching mechanisms for smooth offline capability and connected reactive state management with REST and GraphQL APIs.
+  - Tech Stack: Flutter, Dart, Reactive State Management, Local Data Caching, REST & GraphQL Pipelines.
+
+---
+
+## 3. Technical Proficiencies & Skills Matrix
+
+### Client Layer (Frontend & Mobile)
+- Flutter & Dart: Cross-platform mobile development, clean architecture, BLoC / Riverpod / Provider state management.
+- React & TypeScript: Modern component design, hooks, reactive UI, state management, Vite bundling.
+- UI/UX & Responsive Web: Tailwind CSS, modern CSS variable architecture, accessible dark/light theming.
+
+### Protocol Layer (Web3 & Smart Contracts)
+- Languages: Solidity.
+- Environment: EVM-compatible blockchains (Ethereum, Arbitrum, Optimism, Polygon, BNB Chain, etc.).
+- Concepts: Tokenomics, Custom Fee Routing, Automated Market Makers (AMM), Liquidity Management, Smart Contract Auditing & Security.
+
+### Backend & Distributed Systems
+- Edge & Serverless: Cloudflare Edge Workers, Firebase Cloud Functions.
+- Runtimes: Node.js, Express.
+- Protocols & APIs: RESTful API design, GraphQL schemas, WebSockets.
+- Blockchain Infrastructure: Multi-Chain RPC node management, event indexing.
+
+### Infrastructure & DevOps
+- Version Control: Git, GitHub.
+- Automation: GitHub Actions, CI/CD automated deployment pipelines.
+- Hosting & Delivery: Cloudflare Pages, Edge CDN, Vite build pipeline.
+
+---
+
+## 4. Contact & Verification Links
+- Official Website: https://jeff.moonlist.site/
+- GitHub Profile: https://github.com/yenmulla
+- Direct Telegram: https://t.me/moon_jeff
+- Business Email: jeff@app.moonlist.app
+- PDF Resume Download: https://jeff.moonlist.site/Geoffrey_Githii_Portfolio.pdf
+- Sitemaps: https://jeff.moonlist.site/sitemap.xml
+- LLM Overview: https://jeff.moonlist.site/llms.txt
