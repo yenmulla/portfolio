@@ -136,3 +136,4 @@ def render_favicon_png(size, out_path):
 render_favicon_png(180, r"c:\Users\Yen\.gemini\antigravity\scratch\geoffrey-portfolio\public\apple-touch-icon.png")
 render_favicon_png(64, r"c:\Users\Yen\.gemini\antigravity\scratch\geoffrey-portfolio\public\favicon-64x64.png")
 render_favicon_png(32, r"c:\Users\Yen\.gemini\antigravity\scratch\geoffrey-portfolio\public\favicon-32x32.png")
+
