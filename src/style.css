@@ -1734,21 +1734,121 @@ body {
 }
 .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .hero-title { font-size: 2rem; }
-  .competencies-grid { grid-template-columns: 1fr; }
-  .contact-card { grid-template-columns: 1fr; gap: 1.75rem; }
-  .nav-links { display: none; }
+/* ── Responsive & Mobile Customizations ── */
 
-  /* IDE responsive */
-  .ide-minimap  { display: none; }
-  .ide-sidebar  { width: 170px; }
-  .ide-titlebar-center { display: none; }
-  .ide-status-center { display: none; }
+.ide-mobile-menu-btn {
+  display: none;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  white-space: nowrap;
+}
+[data-theme="light"] .ide-mobile-menu-btn {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #0f172a;
 }
 
-@media (max-width: 540px) {
-  .ide-sidebar  { display: none; }
-  .ide-activitybar { display: none; }
+@media (max-width: 768px) {
+  .hero-title { font-size: 2.2rem; }
+  .hero-actions { flex-direction: column; width: 100%; }
+  .hero-actions .btn { width: 100%; justify-content: center; }
+  .competencies-grid { grid-template-columns: 1fr; }
+  .contact-card { grid-template-columns: 1fr; gap: 1.75rem; padding: 1.75rem; }
+  .nav-links { display: none; }
+
+  /* IDE Responsive Rules */
+  .ide-minimap  { display: none; }
+  .ide-status-center { display: none; }
+  .ide-title-text { display: none; }
+
+  .ide-cmd-btn span { display: none; }
+  .ide-cmd-btn { padding: 4px 8px; }
+
+  .ide-sidebar {
+    width: 200px;
+  }
+}
+
+@media (max-width: 580px) {
+  .ide-titlebar {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .ide-mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  /* Slide-over Mobile Drawer for Sidebar on Mobile */
+  .ide-sidebar {
+    position: fixed;
+    top: 36px;
+    left: 0;
+    bottom: 24px;
+    z-index: 250;
+    width: 240px;
+    background: var(--ide-sidebar);
+    border-right: 1px solid var(--ide-border);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    transform: translateX(-100%);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .ide-sidebar:not(.collapsed) {
+    transform: translateX(0);
+  }
+
+  .ide-activitybar {
+    width: 42px;
+  }
+  .ide-ab-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Compact Terminal for Mobile */
+  .ide-terminal {
+    height: 150px;
+  }
+  .ide-term-chips {
+    display: none;
+  }
+
+  .ide-editor-scroll {
+    font-size: 0.75rem;
+  }
+  .ide-line-numbers {
+    min-width: 34px;
+  }
+  .ide-ln {
+    padding: 0 6px;
+  }
+  .ide-code-content {
+    padding: 8px 12px;
+  }
+
+  .ide-mode-btn span {
+    display: none;
+  }
+  .ide-mode-btn {
+    padding: 4px 8px;
+  }
+
+  .filter-tabs {
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 4px;
+  }
+  .filter-tab {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
 }

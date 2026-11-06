@@ -450,6 +450,7 @@ function renderIDEMode(app: HTMLElement) {
           <span class="ide-tl yellow"></span>
           <span class="ide-tl green"></span>
         </div>
+        <button class="ide-mobile-menu-btn ${isSidebarOpen ? 'active' : ''}" id="ide-mobile-menu-btn" title="Files">${icons.folderOpen} Files</button>
         <span class="ide-title-text">geoffrey-githii — portfolio</span>
       </div>
       <div class="ide-titlebar-center">
@@ -1162,12 +1163,24 @@ function attachEventHandlers() {
     });
   }
 
+  // Mobile Menu / File Drawer Toggle
+  const mobileMenuBtn = document.getElementById('ide-mobile-menu-btn');
+  if (mobileMenuBtn) {
+    mobileMenuBtn.addEventListener('click', () => {
+      isSidebarOpen = !isSidebarOpen;
+      const sidebar = document.getElementById('ide-sidebar');
+      if (sidebar) sidebar.classList.toggle('collapsed', !isSidebarOpen);
+      mobileMenuBtn.classList.toggle('active', isSidebarOpen);
+    });
+  }
+
   // IDE Sidebar file clicks
   document.querySelectorAll('.ide-tree-file[data-venture]').forEach(el => {
     el.addEventListener('click', () => {
       const id = (el as HTMLElement).dataset.venture;
       if (id) {
         activeIdeFile = id;
+        if (window.innerWidth <= 580) isSidebarOpen = false;
         renderApp();
       }
     });
@@ -1181,6 +1194,7 @@ function attachEventHandlers() {
       const special = (el as HTMLElement).dataset.special;
       if (special) {
         activeIdeFile = special;
+        if (window.innerWidth <= 580) isSidebarOpen = false;
         renderApp();
       }
     });
