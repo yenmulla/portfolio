@@ -1764,13 +1764,43 @@ body {
   .contact-card { grid-template-columns: 1fr; gap: 1.75rem; padding: 1.75rem; }
   .nav-links { display: none; }
 
-  /* IDE Responsive Rules */
-  .ide-minimap  { display: none; }
-  .ide-status-center { display: none; }
-  .ide-title-text { display: none; }
+  /* Executive Navbar Mobile Layout Fix */
+  .nav-inner {
+    padding: 0 0.75rem;
+  }
+  .nav-actions {
+    gap: 0.4rem;
+  }
+  .nav-actions #view-pdf-btn,
+  .nav-actions a.btn-primary {
+    display: none !important; /* Hide secondary PDF buttons on mobile header to prevent overlapping */
+  }
+  .mode-toggle .mode-btn span {
+    display: none !important; /* Icons only for mode toggle on mobile */
+  }
+  .mode-toggle .mode-btn {
+    padding: 6px 10px;
+  }
 
-  .ide-cmd-btn span { display: none; }
-  .ide-cmd-btn { padding: 4px 8px; }
+  /* IDE Navbar Mobile Layout Fix */
+  .ide-titlebar {
+    padding: 0 0.5rem;
+  }
+  .ide-titlebar-center {
+    display: none !important; /* Hide absolute centered search box on mobile to prevent collision */
+  }
+  .ide-title-text {
+    display: none !important;
+  }
+  .ide-traffic-lights {
+    display: none !important; /* Hide macOS dots on narrow screens */
+  }
+  .ide-status-center {
+    display: none !important;
+  }
+  .ide-minimap {
+    display: none !important;
+  }
 
   .ide-sidebar {
     width: 200px;
